@@ -1,21 +1,24 @@
-/*
-	To do better: dynamically define the stack size on the constructor
-*/
-
 #include <iostream>
 #include <string>
-#include <cstdlib>
+#include <cstring> // memset
+#include <new>     // new
 
 class Stack {
   private:
+		int stackSize;
 		int top;
-		int array[5];
+		int *array;
 
 	public:
-		Stack() {
+		Stack(int size) {
 			this->top = -1;
-			// initialize all the positions with 0
-			for(int i = 0; i < 5; i++) this->array[i] = 0;
+			this->stackSize = size;
+			this->array = new int[size];
+			std::memset(this->array, 0, sizeof(this->array));
+		}
+
+		~Stack() {
+			delete[] this->array;
 		}
 
 		bool isEmpty() {
@@ -23,7 +26,7 @@ class Stack {
 		}
 
 		bool isFull() {
-			return this->top == 4;
+			return this->top == this->stackSize - 1;
 		}
 
 		void push(int value) {
@@ -69,14 +72,16 @@ class Stack {
 		void display() { // from last to the first values
 			std::cout << "The values in the stack are: " << std::endl;
 
-			for(int i = 4; i >= 0; i--) std::cout << this->array[i] << std::endl;
+			for(int i = this->stackSize - 1; i >= 0; i--) std::cout << this->array[i] << std::endl;
 		}
 
 };
 
 int main() {
-	Stack myStack;
-	int option, position, value;
+	int stackSize, option, position, value;
+	std::cout << "Enter the stack size: " << std::endl;
+	std::cin >> stackSize;
+	Stack myStack(stackSize);
 
 	do {
 		std::cout << "What operation do you want to perform? Enter 0 to exit." << std::endl;
